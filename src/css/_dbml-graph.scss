@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400..900&display=swap');
+@import "VDbChart/variables";
+@import "VDbChart";
+
+.body {
+  &--dark {
+    --chart-bg-color: #44444c;
+    --chart-bg-grid-small-stroke-color: rgb(127, 127, 127);
+    --chart-bg-grid-stroke-color: rgb(191, 191, 191);
+
+    --ref-color: #9b9ca4;
+    --ref-highlight-color: #3ea8de;
+    --field-name-color: #d7d7d9;
+    --field-type-color: #999;
+    --field-type-ads-bg-color: #999999;
+    --field-type-ads-color: #eeeeee;
+    --field-bg-color: #37383f;
+    --pk-field-color: #d7d7d9;
+    --highlight-field-color: #4b4c53;
+    --temp-ref-color: #5d5e67;
+    --endpoint-color: #d7d7d9;
+    --graph-container-bg-color: #37383f;
+    --graph-container-color: #d7d7d9;
+    --graph-container-color-hover: #fff;
+    --table-stroke-color: #222;
+    --table-header-color: #222;
+    --table-header-fg-color: #FFFFFF;
+    --table-group-color: #56565e;
+    --table-group-stroke-color: #696969;
+    --table-group-name-color: #fbfbfb;
+    --table-highlight-stroke-color: #3ea8de;
+
+    --table-tooltip-bg-color: rgba(0, 0, 0, 0.9);
+  }
+
+  &--light {
+    --chart-bg-color: #fbfbfb;
+    --chart-bg-grid-small-stroke-color: rgb(127, 127, 127);
+    --chart-bg-grid-stroke-color: rgb(63, 63, 63);
+    --field-type-ads-bg-color: #c7c7c7;
+    --field-type-ads-color: #525252;
+    --ref-color: #666666;
+    --ref-highlight-color: #619bcc;
+
+    --field-name-color: #4d4d4d;
+    --field-type-color: #646464;
+    --field-bg-color: #f6f6f6;
+
+    --pk-field-color: #000;
+    --highlight-field-color: #deecf3;
+
+    --temp-ref-color: #87cefa;
+    --endpoint-color: #000;
+
+    --graph-container-bg-color: #f1f1f1;
+    --graph-container-color: #555;
+
+    --table-header-color: #316896;
+    --table-header-fg-color: #FFFFFF;
+
+    --table-stroke-color: #ebebeb;
+    --table-group-color: #ebebeb;
+    --table-group-stroke-color: #dfdfdf;
+    --table-group-name-color: #555;
+    --table-highlight-stroke-color: #3ea8de;
+    --table-tooltip-bg-color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.dbml-graph, .db-chart {
+  font-family: $table-font-family;
+  font-weight: 400;
+  font-size: 13px;
+
+  background-color: var(--chart-bg-color);
+
+  > svg {
+    cursor: grab;
+    touch-action: auto;
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  .db-chart__bg {
+    fill: var(--chart-bg-color);
+    width: 100%;
+    height: 100%;
+
+    &-grid {
+      stroke: var(--chart-bg-grid-stroke-color);
+      stroke-width: 1;
+      stroke-opacity: 0.5;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+
+      &-small {
+        path {
+          stroke: var(--chart-bg-grid-small-stroke-color);
+          stroke-width: 0.5;
+          stroke-opacity: 0.5;
+          vector-effect: non-scaling-stroke;
+        }
+      }
+    }
+
+  }
+
+
+  .db-table, .db-field {
+    &-tooltip {
+      display: none;
+      min-width: 4rem;
+      min-height: 4rem;
+      position: absolute;
+
+      &__bg {
+        width: 4rem;
+        height: 4rem;
+        z-index: 1000;
+        fill: var(--table-tooltip-bg-color)
+      }
+    }
+  }
+
+  .db-table__highlight .db-table-tooltip,
+  .db-field__highlight .db-field-tooltip
+  {
+    display: block;
+  }
+
+  .grid {
+    stroke: #16a085;
+    stroke-width: 0.5;
+    stroke-opacity: 0;
+    transition-property: stroke-opacity;
+    transition-duration: 1s;
+    pointer-events: none;
+  }
+}
