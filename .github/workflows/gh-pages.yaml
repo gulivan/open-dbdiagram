@@ -16,17 +16,14 @@ jobs:
             cache-dependency-path: '**/yarn.lock'
 
         - name: Install packages
-          working-directory: web
           shell: bash
           run: yarn install --frozen-lockfile
 
         - name: Build Vue app
-          working-directory: web
           shell: bash
           run: yarn build
 
         - name: Deploy to GitHub Pages
-          working-directory: web
           shell: bash
           run: |
             pushd dist/spa
