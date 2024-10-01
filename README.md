@@ -2,17 +2,17 @@ Forked from:
 - [NomadRazor/dbdiagram-oss-wrep](https://github.com/NomadRazor/dbdiagram-oss-wrep/fork)
 - [TruDan/dbdiagram-oss](https://github.com/TruDan/dbdiagram-oss)
 
-# dbdiagram-oss
+# DB Diagram OSS (dbdiagram-oss)
 
 An Open Source solution for designing DB diagrams based on [DBML](https://dbml.dbdiagram.io/home/) (Database Markup Language).
 Initally this fork is intended for my personal usage but feel free to use it.
 
+## Start app:
+`docker-compose up -d --build`
 
 
-# DB Diagram OSS (dbdiagram-oss)
 
-
-## Install the dependencies
+## Start in dev mode:
 ```bash
 yarn
 ```
