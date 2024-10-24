@@ -323,7 +323,7 @@
       fit: false,
       center: false,
       dblClickZoomEnabled: false,
-      zoomScaleSensitivity: 0.2,
+      zoomScaleSensitivity: 0.3,
       minZoom: 0.1,
       maxZoom: 2.0,
       // onPan: (newPan) => {
@@ -469,4 +469,5 @@
   }
 
 </script>
+
 

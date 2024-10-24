@@ -44,6 +44,8 @@
             v-model="scale"
             :min="minScale"
             :max="maxScale"
+            :step="0.1"
+            :immediate="true"
           />
           <div
             class="q-mx-sm non-selectable"
@@ -100,13 +102,14 @@ import { store } from 'quasar/wrappers'
   }
 
   const scale = computed({
-    get () {
-      return (chart.zoom || 1) * 100.0
-    },
-    set (value) {
-      chart.updateZoom(value / 100.0)
-    }
-  })
+      get () {
+        return (chart.zoom || 1) * 100.0
+      },
+      set (value) {
+        const newZoom = value / 100.0;
+        chart.updateZoom(newZoom);
+      }
+    })
 
   const minScale = ref(10)
   const maxScale = ref(200)
@@ -306,3 +309,4 @@ import { store } from 'quasar/wrappers'
     }
   }
 </style>
+
