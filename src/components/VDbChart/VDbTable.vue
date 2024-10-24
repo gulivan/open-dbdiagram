@@ -62,6 +62,7 @@
   import { snap } from '../../utils/MathUtil'
   import { useEditorStore } from '../../store/editor'
   import VDbHeadColorTip from './VDbHeadColorTip.vue'
+  import { debounce } from 'quasar'
 
   const props = defineProps({
     id: Number,
@@ -248,6 +249,19 @@
   function onFieldClick (e, field) {
     emit('click:field', e, field);
   }
+
+  const updatePosition = debounce((x, y) => {
+    state.x = x
+    state.y = y
+  }, 16) // ~60fps
+
+  watch(() => props.x, (newX) => {
+    updatePosition(newX, state.y)
+  })
+
+  watch(() => props.y, (newY) => {
+    updatePosition(state.x, newY)
+  })
 </script>
 
 <style scoped>

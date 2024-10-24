@@ -3,6 +3,11 @@
     ref="root"
     class="db-chart"
     @mousemove.passive.capture="updateCursorPosition"
+    :width="width"
+    :height="height"
+    :viewBox="viewBox"
+    shape-rendering="optimizeSpeed" 
+    text-rendering="optimizeSpeed"
   >
     <defs>
       <pattern id="db-chart__bg-grid-base"
@@ -464,3 +469,4 @@
   }
 
 </script>
+
