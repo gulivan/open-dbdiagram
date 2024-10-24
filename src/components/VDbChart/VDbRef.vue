@@ -272,17 +272,18 @@
     
     const [start, end] = getClosest(startElAnchors, endElAnchors)
     
-    // Calculate the direct path vector
-    const dx = end.x - start.x
-    const dy = end.y - start.y
-    const distance = Math.sqrt(dx * dx + dy * dy)
+    const controlPoint1 = { x: (start.x + end.x) / 2, y: start.y }
+    const controlPoint2 = { x: (start.x + end.x) / 2, y: end.y }
 
-    // Create a single curve
-    const offset = Math.min(distance * 0.2, 50)
-    const midX = (start.x + end.x) / 2
-    const midY = (start.y + end.y) / 2
+    let pathData = `M ${start.x},${start.y} `
+    pathData += `L ${start.x - 10},${start.y} `
+    pathData += `M ${start.x},${start.y - 5} `
+    pathData += `L ${start.x - 10},${start.y} `
+    pathData += `M ${start.x},${start.y + 5} `
+    pathData += `L ${start.x - 10},${start.y} `
+    pathData += `C ${controlPoint1.x},${controlPoint1.y} ${controlPoint2.x},${controlPoint2.y} ${end.x},${end.y}`
 
-    return `M ${start.x},${start.y} C ${midX},${midY - offset} ${midX},${midY - offset} ${end.x},${end.y}`
+    return pathData
   })
 
   const onMouseEnter = (e) => {
