@@ -5,14 +5,17 @@
     stroke-width: 2;
     stroke-linejoin: round;
     stroke-linecap: round;
-    stroke-miterlimit: round($number: 3);
- }
+    stroke-miterlimit: 10;
+    transition: d 0.4s;
+  }
   &__hitbox {
     fill: none;
     stroke: transparent;
-    //stroke: var(--ref-color);
     stroke-width: 29;
-
+    pointer-events: stroke;
+    // Ensure the hitbox follows the same curve as the path
+    stroke-linejoin: round;
+    stroke-linecap: round;
   }
 
   &__highlight {
@@ -20,31 +23,11 @@
       stroke: var(--ref-highlight-color);
     }
 
-    .db-ref__control-point {
-      display: unset;
-      touch-action: auto;
-    }
   }
 
   &__many-ref{
     font-size: 22px;
   }
 
-  &__control-point {
-    display: none;
-    fill: black;
-    stroke: var(--ref-highlight-color);
-    stroke-width: 1;
-    r: 5;
 
-    &__highlight {
-      r: 6;
-      stroke-width: 2;
-    }
-
-    &__dragging {
-      fill: var(--ref-highlight-color)
-    }
-
-  }
 }

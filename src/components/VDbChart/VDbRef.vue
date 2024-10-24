@@ -35,26 +35,6 @@
           :y="labels.end.pos.y">
       {{ labels.end.rel }}
     </text>
-
-    <g class="db-ref__control-points">
-      <circle v-for="(v,i) of controlPoints"
-              :key="i"
-              :cx="v.x"
-              :cy="v.y"
-              :class="{
-                'db-ref__control-point': true,
-                'db-ref__control-point__highlight': i === controlPoint_highlighted,
-                'db-ref__control-point__dragging': i === controlPoint_dragging,
-              }"
-              :data-id="i"
-              @dblclick.passive="controlPoint_onDblClick"
-              @mousedown.passive="controlPoint_startDrag"
-              @mouseenter.passive="controlPoint_onMouseEnter"
-              @mouseleave.passive="controlPoint_onMouseLeave"
-              @contextmenu.prevent="showTooltip"
-      />
-    </g>
-
   </g>
 </template>
 
@@ -263,27 +243,25 @@
     }
 
     const [start, end] = getClosest(startElAnchors, endElAnchors)
-    console.log('updateControlPoints', start, end, startElAnchors, endElAnchors)
+    
+    // Calculate the direct path vector
+    const dx = end.x - start.x
+    const dy = end.y - start.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
 
-    const minX = Math.min(start.x, end.x)
-    const minY = Math.min(start.y, end.y)
-    const maxX = Math.max(start.x, end.x)
-    const maxY = Math.max(start.y, end.y)
-    const midX = (minX + (((maxX - minX) || 2) / 2))
-    const midY = (minY + (((maxY - minY) || 2) / 2))
-    const mid = {
-      x: midX,
-      y: midY
-    }
+    // Create a single curve by offsetting control points perpendicular to the path
+    const offset = Math.min(distance * 0.2, 50) // Limit maximum curve
+    const midX = (start.x + end.x) / 2
+    const midY = (start.y + end.y) / 2
 
     s.vertices = [
       {
-        x: mid.x,
-        y: start.y
+        x: midX,
+        y: midY - offset
       },
       {
-        x: mid.x,
-        y: end.y
+        x: midX,
+        y: midY - offset
       }
     ]
   }
@@ -291,13 +269,20 @@
   const path = computed(() => {
     const startElAnchors = startAnchors.value
     const endElAnchors = endAnchors.value
+    
+    const [start, end] = getClosest(startElAnchors, endElAnchors)
+    
+    // Calculate the direct path vector
+    const dx = end.x - start.x
+    const dy = end.y - start.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
 
-    const points = s.vertices
-    if (points.length == 0 || points.some(p => Number.isNaN(p.x) || Number.isNaN(p.y))) return ``
-    const start = getClosestAnchor(points[0], startElAnchors)
-    const end = getClosestAnchor(points[points.length - 1], endElAnchors)
+    // Create a single curve
+    const offset = Math.min(distance * 0.2, 50)
+    const midX = (start.x + end.x) / 2
+    const midY = (start.y + end.y) / 2
 
-    return `M ${start.x},${start.y} L ${points.map(p => (`${p.x},${p.y}`)).join(' ')} L ${end.x} ${end.y}`
+    return `M ${start.x},${start.y} C ${midX},${midY - offset} ${midX},${midY - offset} ${end.x},${end.y}`
   })
 
   const onMouseEnter = (e) => {
@@ -305,93 +290,6 @@
   }
   const onMouseLeave = (e) => {
     highlight.value = false
-  }
-
-  const controlPoint_highlighted = ref(null)
-  const controlPoint_dragging = ref(null)
-  const controlPoint_dragOffset = reactive({
-    x: 0,
-    y: 0
-  })
-
-  const controlPoint_onMouseEnter = ({ target }) => {
-    const controlPointId = Number(target.getAttribute('data-id'))
-    controlPoint_highlighted.value = controlPointId
-  }
-  const controlPoint_onMouseLeave = ({ target }) => {
-    controlPoint_highlighted.value = null
-    controlPoint_highlighted.value = null
-  }
-  const controlPoint_startDrag = ({
-    target,
-    offsetX,
-    offsetY
-  }) => {
-    const controlPointId = Number(target.getAttribute('data-id'))
-    const v = s.vertices[controlPointId]
-
-    controlPoint_dragging.value = controlPointId
-
-    const p = store.inverseCtm.transformPoint({
-      x: offsetX,
-      y: offsetY
-    })
-
-    controlPoint_dragOffset.x = p.x - v.x
-    controlPoint_dragOffset.y = p.y - v.y
-    props.containerRef.addEventListener('mousemove', controlPoint_drag, { passive: true })
-    props.containerRef.addEventListener('mouseup', controlPoint_drop, { passive: true })
-    props.containerRef.addEventListener('mouseleave', controlPoint_onMouseLeave, { passive: true })
-  }
-  const controlPoint_drag = ({
-    target,
-    offsetX,
-    offsetY
-  }) => {
-    const p = store.inverseCtm.transformPoint({
-      x: offsetX,
-      y: offsetY
-    })
-    const controlPointId = controlPoint_dragging.value
-    if (s.auto) {
-      s.auto = false
-    }
-
-    const v = s.vertices[controlPointId]
-    v.x = snap((p.x - controlPoint_dragOffset.x), gridSnap)
-    v.y = snap((p.y - controlPoint_dragOffset.y), gridSnap)
-
-  }
-
-  const showTooltip = (e) => {
-    const p = store.inverseCtm.transformPoint({
-      x: e.offsetX,
-      y: e.offsetY
-    })
-    const tooltipPosition = {
-      x: p.x + 10,
-      y: p.y,
-    }
-   // console.log(e.target)
-   store.showRefPanel(tooltipPosition, VDbRefActions, {click:p, wpid:e.target.dataset.id, data:props})
-   emit('click:ref', e, s);
-    
-  }
-
-  const controlPoint_drop = (e) => {
-    controlPoint_dragOffset.x = 0
-    controlPoint_dragOffset.y = 0
-    controlPoint_dragging.value = null
-    controlPoint_highlighted.value = null
-
-    props.containerRef.removeEventListener('mousemove', controlPoint_drag, { passive: true })
-    props.containerRef.removeEventListener('mouseup', controlPoint_drop, { passive: true })
-    props.containerRef.removeEventListener('mouseleave', controlPoint_onMouseLeave, { passive: true })
-  }
-
-  const controlPoint_onDblClick = ({target}) => {
-    s.auto = true;
-    updateControlPoints()
   }
 
   onMounted(() => {
@@ -417,3 +315,11 @@
     deep: true
   })
 </script>
+
+
+
+
+
+
+
+
