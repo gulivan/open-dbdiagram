@@ -253,6 +253,7 @@
   const updatePosition = debounce((x, y) => {
     state.x = x
     state.y = y
+    emit('update:position', { x, y }) // Emit position change
   }, 16) // ~60fps
 
   watch(() => props.x, (newX) => {
