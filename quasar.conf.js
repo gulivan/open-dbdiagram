@@ -44,12 +44,6 @@ module.exports = configure(function (ctx) {
       chainWebpack(/* chain */) {
       }
     },
-    sourceFiles: {
-      rootComponent: 'src/App.vue',
-      router: 'src/router',
-      store: 'src/store',
-      indexHtmlTemplate: 'src/index.template.html'
-    },
     devServer: {
       server: {
         type: "http"
