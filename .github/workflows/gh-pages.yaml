@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
         
         - uses: actions/setup-node@v2
           with:
@@ -30,7 +32,6 @@ jobs:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             publish_dir: ./dist/spa
             force_orphan: true
-            commit_message: "Deploy to GitHub Pages"
-            enable_jekyll: false
-            cname: # your custom domain if you have one
+            clean: true
+            commit_message: "Deploy to GitHub Pages [skip ci]"
     
