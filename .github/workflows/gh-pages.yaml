@@ -30,5 +30,8 @@ jobs:
             ln -s index.html 404.html
             popd
             git config --global user.name "${{ github.repository_owner }}"
-            yarn deploy
+            git config --global user.email "${{ github.repository_owner }}@users.noreply.github.com"
+            git add dist/spa -f
+            git commit -m "Deploy to GitHub Pages"
+            git subtree push --prefix dist/spa origin gh-pages
     
