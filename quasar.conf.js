@@ -37,7 +37,7 @@ module.exports = configure(function (ctx) {
     build: {
       env: require("dotenv").config().parsed,
       publicPath: process.env.NODE_ENV === 'open-dbdiagram' ? '/' : '/',
-      vueRouterMode: "history",
+      vueRouterMode: "hash",
       chainWebpack(/* chain */) {
       }
     },
