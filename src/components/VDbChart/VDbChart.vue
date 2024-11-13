@@ -3,6 +3,11 @@
     ref="root"
     class="db-chart"
     @mousemove.passive.capture="updateCursorPosition"
+    :width="width"
+    :height="height"
+    :viewBox="viewBox"
+    shape-rendering="optimizeSpeed" 
+    text-rendering="optimizeSpeed"
   >
     <defs>
       <pattern id="db-chart__bg-grid-base"
@@ -318,7 +323,7 @@
       fit: false,
       center: false,
       dblClickZoomEnabled: false,
-      zoomScaleSensitivity: 0.2,
+      zoomScaleSensitivity: 0.3,
       minZoom: 0.1,
       maxZoom: 2.0,
       // onPan: (newPan) => {
@@ -464,3 +469,5 @@
   }
 
 </script>
+
+

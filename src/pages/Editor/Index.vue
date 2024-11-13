@@ -29,27 +29,60 @@
   const editorRef = ref(null)
   const editor = useEditorStore()
   const q = useQuasar()
+
   function touchHandler(event) {
-        var touch = event.changedTouches[0];
-        var simulatedEvent = document.createEvent("MouseEvent");
-            simulatedEvent.initMouseEvent({
-            touchstart: "mousedown",
-            touchmove: "mousemove",
-            touchend: "mouseup"
-        }[event.type], true, true, window, 1,
-            touch.screenX, touch.screenY,
-            touch.clientX, touch.clientY, false,
-            false, false, false, 0, null);
-        touch.target.dispatchEvent(simulatedEvent);
-        
-    };
-  onMounted(()=>{
+    // Only handle single touch events
+    if (event.touches.length === 1) {
+      var touch = event.changedTouches[0];
+      var simulatedEvent = document.createEvent("MouseEvent");
+      simulatedEvent.initMouseEvent({
+        touchstart: "mousedown",
+        touchmove: "mousemove",
+        touchend: "mouseup"
+      }[event.type], true, true, window, 1,
+        touch.screenX, touch.screenY,
+        touch.clientX, touch.clientY, false,
+        false, false, false, 0, null);
+      touch.target.dispatchEvent(simulatedEvent);
+    }
+  }
+
+  // Add new handler for two-finger gestures
+  function handleTwoFingerGesture(event) {
+    if (event.touches.length === 2) {
+      event.preventDefault();
+      
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+      
+      // Calculate the midpoint between the two touches
+      const midX = (touch1.clientX + touch2.clientX) / 2;
+      const midY = (touch1.clientY + touch2.clientY) / 2;
+      
+      // Create a synthetic mouse event for panning
+      const simulatedEvent = document.createEvent("MouseEvent");
+      simulatedEvent.initMouseEvent(
+        "mousemove", true, true, window, 0,
+        0, 0, midX, midY,
+        false, false, false, false, 0, null
+      );
+      
+      // Dispatch the event for panning
+      event.target.dispatchEvent(simulatedEvent);
+    }
+  }
+
+  onMounted(() => {
+    document.addEventListener("touchstart", touchHandler, { passive: false });
+    document.addEventListener("touchmove", touchHandler, { passive: false });
+    document.addEventListener("touchend", touchHandler, { passive: false });
+    document.addEventListener("touchcancel", touchHandler, { passive: false });
     
-    document.addEventListener("touchstart", touchHandler, true);
-    document.addEventListener("touchmove", touchHandler, true);
-    document.addEventListener("touchend", touchHandler, true);
-    document.addEventListener("touchcancel", touchHandler, true);
+    // Add listeners for two-finger gestures
+    document.addEventListener("touchstart", handleTwoFingerGesture, { passive: false });
+    document.addEventListener("touchmove", handleTwoFingerGesture, { passive: false });
   })
+
   const sourceText = computed({
     get: () => editor.getSourceText,
     set: (src) => editor.updateSourceText(src)
