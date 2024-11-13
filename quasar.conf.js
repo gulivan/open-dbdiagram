@@ -37,9 +37,18 @@ module.exports = configure(function (ctx) {
     build: {
       env: require("dotenv").config().parsed,
       publicPath: process.env.NODE_ENV === 'open-dbdiagram' ? '/' : '/',
+      distDir: ctx.modeName === 'spa' ? 'dist/spa' : null,
+      assetsPublicPath: '/open-dbdiagram/',
+      base: '/open-dbdiagram/',
       vueRouterMode: "hash",
       chainWebpack(/* chain */) {
       }
+    },
+    sourceFiles: {
+      rootComponent: 'src/App.vue',
+      router: 'src/router',
+      store: 'src/store',
+      indexHtmlTemplate: 'src/index.template.html'
     },
     devServer: {
       server: {
