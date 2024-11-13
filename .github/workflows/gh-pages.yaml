@@ -32,6 +32,5 @@ jobs:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             publish_dir: ./dist/spa
             force_orphan: true
-            clean: true
             commit_message: "Deploy to GitHub Pages [skip ci]"
     
